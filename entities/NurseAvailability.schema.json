@@ -1,0 +1,65 @@
+{
+  "name": "NurseAvailability",
+  "type": "object",
+  "properties": {
+    "nurse_id": {
+      "type": "string"
+    },
+    "week_start_date": {
+      "type": "string",
+      "format": "date"
+    },
+    "day_of_week": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 6
+    },
+    "shift_type": {
+      "type": "string",
+      "enum": [
+        "morning",
+        "evening",
+        "night"
+      ]
+    },
+    "availability_type": {
+      "type": "string",
+      "enum": [
+        "preferred",
+        "available",
+        "avoid",
+        "blocked"
+      ],
+      "description": "preferred=star, available=V, avoid=soft block, blocked=X"
+    },
+    "can_be_responsible": {
+      "type": "boolean",
+      "default": true
+    },
+    "can_be_monitoring": {
+      "type": "boolean",
+      "default": true
+    },
+    "is_persistent": {
+      "type": "boolean",
+      "default": false,
+      "description": "Global/persistent block that doesn't reset weekly"
+    },
+    "is_hidden_admin_block": {
+      "type": "boolean",
+      "default": false,
+      "description": "Block set by head nurse, invisible to the nurse"
+    },
+    "free_text_request": {
+      "type": "string",
+      "description": "Special request in free text"
+    }
+  },
+  "required": [
+    "nurse_id",
+    "week_start_date",
+    "day_of_week",
+    "shift_type",
+    "availability_type"
+  ]
+}

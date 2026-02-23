@@ -1,0 +1,48 @@
+{
+  "name": "Notification",
+  "type": "object",
+  "properties": {
+    "user_id": {
+      "type": "string",
+      "description": "User to notify"
+    },
+    "title": {
+      "type": "string",
+      "description": "Notification title"
+    },
+    "message": {
+      "type": "string",
+      "description": "Notification message"
+    },
+    "type": {
+      "type": "string",
+      "enum": [
+        "schedule_ready",
+        "shift_reminder",
+        "request_window",
+        "system"
+      ],
+      "description": "Type of notification"
+    },
+    "is_read": {
+      "type": "boolean",
+      "default": false,
+      "description": "Has user read this notification"
+    },
+    "link_page": {
+      "type": "string",
+      "description": "Page to navigate to when clicked"
+    },
+    "sent_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "When notification was sent"
+    }
+  },
+  "required": [
+    "user_id",
+    "title",
+    "message",
+    "type"
+  ]
+}

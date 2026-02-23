@@ -1,0 +1,54 @@
+{
+  "name": "UserSettings",
+  "type": "object",
+  "properties": {
+    "user_id": {
+      "type": "string",
+      "description": "Link to User entity"
+    },
+    "notify_schedule_ready": {
+      "type": "boolean",
+      "default": true,
+      "description": "Notify when schedule is published"
+    },
+    "notify_before_morning_shift": {
+      "type": "boolean",
+      "default": false,
+      "description": "Notify before morning shift"
+    },
+    "notify_before_evening_shift": {
+      "type": "boolean",
+      "default": false,
+      "description": "Notify before evening shift"
+    },
+    "notify_before_night_shift": {
+      "type": "boolean",
+      "default": false,
+      "description": "Notify before night shift"
+    },
+    "morning_notification_hours": {
+      "type": "number",
+      "minimum": 1,
+      "maximum": 24,
+      "default": 12,
+      "description": "Hours before morning shift to notify"
+    },
+    "evening_notification_hours": {
+      "type": "number",
+      "minimum": 1,
+      "maximum": 24,
+      "default": 6,
+      "description": "Hours before evening shift to notify"
+    },
+    "night_notification_hours": {
+      "type": "number",
+      "minimum": 1,
+      "maximum": 24,
+      "default": 8,
+      "description": "Hours before night shift to notify"
+    }
+  },
+  "required": [
+    "user_id"
+  ]
+}

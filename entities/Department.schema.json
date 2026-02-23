@@ -1,0 +1,59 @@
+{
+  "name": "Department",
+  "type": "object",
+  "properties": {
+    "name": {
+      "type": "string",
+      "description": "Department name"
+    },
+    "code": {
+      "type": "string",
+      "description": "Short code for department"
+    },
+    "hospital_name": {
+      "type": "string"
+    },
+    "head_nurse_id": {
+      "type": "string",
+      "description": "ID of department head nurse"
+    },
+    "min_staff_morning_weekday": {
+      "type": "number",
+      "default": 6
+    },
+    "min_staff_morning_saturday": {
+      "type": "number",
+      "default": 5
+    },
+    "min_staff_evening": {
+      "type": "number",
+      "default": 6
+    },
+    "min_staff_night": {
+      "type": "number",
+      "default": 5
+    },
+    "is_active": {
+      "type": "boolean",
+      "default": true
+    },
+    "request_window_start_day": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 6,
+      "default": 0,
+      "description": "Day when requests open (0=Sunday)"
+    },
+    "request_window_end_day": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 6,
+      "default": 3,
+      "description": "Day when requests close (3=Wednesday)"
+    }
+  },
+  "required": [
+    "name",
+    "code"
+  ]
+}

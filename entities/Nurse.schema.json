@@ -1,0 +1,103 @@
+{
+  "name": "Nurse",
+  "type": "object",
+  "properties": {
+    "full_name": {
+      "type": "string",
+      "description": "Nurse's full name"
+    },
+    "employee_id": {
+      "type": "string",
+      "description": "Unique employee identifier"
+    },
+    "user_id": {
+      "type": "string",
+      "description": "Link to User entity for login"
+    },
+    "department_id": {
+      "type": "string",
+      "description": "Department the nurse belongs to"
+    },
+    "is_head_nurse": {
+      "type": "boolean",
+      "default": false,
+      "description": "Is this nurse the department head"
+    },
+    "employment_percentage": {
+      "type": "number",
+      "enum": [
+        100,
+        88,
+        76,
+        66
+      ],
+      "default": 100,
+      "description": "Employment percentage determining shift quota"
+    },
+    "experience_years": {
+      "type": "number",
+      "description": "Years of nursing experience"
+    },
+    "seniority_date": {
+      "type": "string",
+      "format": "date",
+      "description": "Date nurse started at hospital"
+    },
+    "grade": {
+      "type": "number",
+      "enum": [
+        1,
+        2,
+        3,
+        4
+      ],
+      "description": "Nurse grade (4 = junior, cannot work during shortage)"
+    },
+    "responsibility_score": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 10,
+      "description": "Suitability for Responsible/Monitoring roles (10=best)"
+    },
+    "is_shabbat_anchor": {
+      "type": "boolean",
+      "default": false,
+      "description": "Nurse regularly works Shabbat shifts"
+    },
+    "shift_type_preference": {
+      "type": "string",
+      "enum": [
+        "any",
+        "morning_only",
+        "evening_only",
+        "night_only",
+        "no_nights"
+      ],
+      "default": "any",
+      "description": "Fixed shift type preference"
+    },
+    "phone": {
+      "type": "string"
+    },
+    "email": {
+      "type": "string"
+    },
+    "photo_url": {
+      "type": "string"
+    },
+    "is_active": {
+      "type": "boolean",
+      "default": true
+    },
+    "notes": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "full_name",
+    "employee_id",
+    "employment_percentage",
+    "experience_years",
+    "grade"
+  ]
+}

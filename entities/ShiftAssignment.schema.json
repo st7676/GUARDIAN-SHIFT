@@ -1,0 +1,80 @@
+{
+  "name": "ShiftAssignment",
+  "type": "object",
+  "properties": {
+    "nurse_id": {
+      "type": "string",
+      "description": "Reference to nurse"
+    },
+    "department_id": {
+      "type": "string"
+    },
+    "week_start_date": {
+      "type": "string",
+      "format": "date",
+      "description": "Start date of the week (Sunday)"
+    },
+    "day_of_week": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 6,
+      "description": "0=Sunday, 6=Saturday"
+    },
+    "shift_type": {
+      "type": "string",
+      "enum": [
+        "morning",
+        "evening",
+        "night"
+      ],
+      "description": "Type of shift"
+    },
+    "role": {
+      "type": "string",
+      "enum": [
+        "responsible",
+        "monitoring",
+        "staff"
+      ],
+      "default": "staff",
+      "description": "Role during the shift"
+    },
+    "is_shabbat_shift": {
+      "type": "boolean",
+      "default": false
+    },
+    "assignment_score": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 3,
+      "description": "How suitable this assignment is (0=blocked, 3=preferred)"
+    },
+    "is_problematic": {
+      "type": "boolean",
+      "default": false,
+      "description": "Flags if a soft constraint was violated"
+    },
+    "violation_notes": {
+      "type": "string",
+      "description": "Explanation if constraints were violated"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "scheduled",
+        "confirmed",
+        "completed",
+        "cancelled",
+        "swapped"
+      ],
+      "default": "scheduled"
+    }
+  },
+  "required": [
+    "nurse_id",
+    "department_id",
+    "week_start_date",
+    "day_of_week",
+    "shift_type"
+  ]
+}

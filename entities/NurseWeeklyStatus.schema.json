@@ -1,0 +1,68 @@
+{
+  "name": "NurseWeeklyStatus",
+  "type": "object",
+  "properties": {
+    "nurse_id": {
+      "type": "string"
+    },
+    "week_start_date": {
+      "type": "string",
+      "format": "date"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "active",
+        "vacation",
+        "sick_leave",
+        "reserve_duty",
+        "training",
+        "return_from_vacation"
+      ],
+      "default": "active"
+    },
+    "target_shifts": {
+      "type": "number",
+      "description": "Target number of shifts for this week"
+    },
+    "assigned_shifts": {
+      "type": "number",
+      "default": 0
+    },
+    "worked_shabbat_last_week": {
+      "type": "boolean",
+      "default": false
+    },
+    "was_high_week_last_time": {
+      "type": "boolean",
+      "description": "For rotation tracking (100% and 76%)"
+    },
+    "had_surplus_last_week": {
+      "type": "boolean",
+      "default": false
+    },
+    "monitoring_block_start": {
+      "type": "number",
+      "description": "Day when monitoring block starts (for block rule)"
+    },
+    "monitoring_block_end": {
+      "type": "number",
+      "description": "Day when monitoring block ends"
+    },
+    "training_days": {
+      "type": "array",
+      "items": {
+        "type": "number"
+      },
+      "description": "Days with training (count as 1 shift)"
+    },
+    "notes": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "nurse_id",
+    "week_start_date",
+    "status"
+  ]
+}

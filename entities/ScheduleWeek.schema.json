@@ -1,0 +1,66 @@
+{
+  "name": "ScheduleWeek",
+  "type": "object",
+  "properties": {
+    "department_id": {
+      "type": "string"
+    },
+    "week_start_date": {
+      "type": "string",
+      "format": "date"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "draft",
+        "requests_open",
+        "requests_closed",
+        "under_review",
+        "generated",
+        "published",
+        "archived"
+      ],
+      "default": "draft"
+    },
+    "total_shifts_required": {
+      "type": "number"
+    },
+    "total_shifts_available": {
+      "type": "number"
+    },
+    "shortage_mode": {
+      "type": "boolean",
+      "default": false
+    },
+    "overstaffing_mode": {
+      "type": "boolean",
+      "default": false
+    },
+    "constraint_violations": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "List of any soft constraint violations"
+    },
+    "fairness_score": {
+      "type": "number",
+      "description": "Overall fairness metric (0-100)"
+    },
+    "generated_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "published_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "notes": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "department_id",
+    "week_start_date"
+  ]
+}
