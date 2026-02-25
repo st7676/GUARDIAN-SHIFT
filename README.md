@@ -1,39 +1,56 @@
-**Welcome to your Base44 project** 
+# Guardian Shift - מערכת ניהול משמרות לאחיות
 
-**About**
+**אפליקציה מודרנית לניהול לוחות זמנים וזיהוי משמרות לסגל סיעודי.**
 
-View and Edit  your app on [Base44.com](http://Base44.com) 
+## ✨ תכונות
 
-This project contains everything you need to run your app locally.
+- 👥 ניהול אחיות וזיהוי משמרות
+- 📅 לוח זמנים גמיש וטלאי
+- 🔄 הזמנת משמרות
+- 📊 דוחות וסטטיסטיקות
+- 🌙 עזרה למטפלות במציאת משמרות חופשיות
 
-**Edit the code in your local development environment**
+## 🚀 התחלה מהירה
 
-Any change pushed to the repo will also be reflected in the Base44 Builder.
+```bash
+# 1. התקנת dependencies
+npm install
 
-**Prerequisites:** 
+# 2. הרצת שרוור פיתוח
+npm run dev
 
-1. Clone the repository using the project's Git URL 
-2. Navigate to the project directory
-3. Install dependencies: `npm install`
-4. Create an `.env.local` file and set the right environment variables
-
-```
-VITE_BASE44_APP_ID=your_app_id
-VITE_BASE44_APP_BASE_URL=your_backend_url
-
-e.g.
-VITE_BASE44_APP_ID=cbef744a8545c389ef439ea6
-VITE_BASE44_APP_BASE_URL=https://my-to-do-list-81bfaad7.base44.app
+# 3. פתח בדפדפן
+http://localhost:5173
 ```
 
-Run the app: `npm run dev`
+## 📖 הוראות מלאות
 
-**Publish your changes**
+👉 ראה את קובץ [SETUP.md](SETUP.md) לפרטים מלאים על התקנה ועיצוב
 
-Open [Base44.com](http://Base44.com) and click on Publish.
+## 🛠️ טכנולוגיות
 
-**Docs & Support**
+- **React 18** - UI Framework
+- **Vite** - Build tool
+- **Tailwind CSS** - Styling
+- **React Router** - Navigation
+- **React Query** - Data fetching
+- **Radix UI** - UI Components
 
-Documentation: [https://docs.base44.com/Integrations/Using-GitHub](https://docs.base44.com/Integrations/Using-GitHub)
+## 📂 מידע נוסף
 
-Support: [https://app.base44.com/support](https://app.base44.com/support)
+- פרויקט זה עובד כרגע עם **mock data** המאוחסן ב-localStorage
+- יוכל להתחבר ל-backend API כאשר יהיה זמין
+- הקוד מוכן לפרודקשן ב- `npm run build`
+
+## 📝 פקודות
+
+```bash
+npm run dev        # פיתוח
+npm run build      # ייצור
+npm run lint       # בדיקת קוד
+npm run preview    # תצוגה מקדימה
+```
+
+---
+
+**פרויקט Guardian Shift | 2026**
