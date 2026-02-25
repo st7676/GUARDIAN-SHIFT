@@ -1,5 +1,5 @@
 import React from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { Calendar, Users, BarChart3, Settings, Clock, LogOut } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
 import { cn } from "@/lib/utils";
@@ -21,6 +21,7 @@ const NAV_ITEMS = [
 ];
 
 export default function Layout({ children, currentPageName }) {
+  const navigate = useNavigate();
   const [currentUser, setCurrentUser] = React.useState(null);
   const [currentNurse, setCurrentNurse] = React.useState(null);
   const [nurses, setNurses] = React.useState([]);
@@ -47,7 +48,9 @@ export default function Layout({ children, currentPageName }) {
   });
 
   const handleLogout = () => {
-    base44.auth.logout();
+    localStorage.removeItem('token');
+    localStorage.removeItem('currentUser');
+    navigate('/login');
   };
 
   return (

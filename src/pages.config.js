@@ -51,6 +51,7 @@ import AdminReview from './pages/AdminReview';
 import Availability from './pages/Availability';
 import Dashboard from './pages/Dashboard';
 import Home from './pages/Home';
+import Login from './pages/Login';
 import MySchedule from './pages/MySchedule';
 import Nurses from './pages/Nurses';
 import Reports from './pages/Reports';
@@ -63,6 +64,7 @@ export const PAGES = {
     "Availability": Availability,
     "Dashboard": Dashboard,
     "Home": Home,
+    "Login": Login,
     "MySchedule": MySchedule,
     "Nurses": Nurses,
     "Reports": Reports,
@@ -70,7 +72,8 @@ export const PAGES = {
 }
 
 export const pagesConfig = {
-    mainPage: "Dashboard",
+    mainPage: "Login",
     Pages: PAGES,
     Layout: __Layout,
+    noLayoutPages: ["Login"],
 };

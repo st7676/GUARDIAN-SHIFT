@@ -6,7 +6,7 @@ import { QueryClientProvider } from '@tanstack/react-query'
 import { queryClientInstance } from '@/lib/query-client'
 
 function App() {
-  const { mainPage, Pages, Layout } = pagesConfig
+  const { mainPage, Pages, Layout, noLayoutPages = [] } = pagesConfig
 
   return (
     <QueryClientProvider client={queryClientInstance}>
@@ -16,8 +16,9 @@ function App() {
             // Create proper path - mainPage is "/" and others are "/pagename"
             const isMainPage = pageName === mainPage
             const path = isMainPage ? '/' : `/${pageName.toLowerCase()}`
+            const shouldSkipLayout = noLayoutPages.includes(pageName)
             
-            if (Layout) {
+            if (Layout && !shouldSkipLayout) {
               return (
                 <Route
                   key={pageName}
