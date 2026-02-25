@@ -54,7 +54,6 @@ import Home from './pages/Home';
 import MySchedule from './pages/MySchedule';
 import Nurses from './pages/Nurses';
 import Reports from './pages/Reports';
-import Settingson from './pages/Settingson';
 import Settings from './pages/Settings';
 import __Layout from './Layout.jsx';
 
@@ -67,7 +66,6 @@ export const PAGES = {
     "MySchedule": MySchedule,
     "Nurses": Nurses,
     "Reports": Reports,
-    "Settingson": Settingson,
     "Settings": Settings,
 }
 

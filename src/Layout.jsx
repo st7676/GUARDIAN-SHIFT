@@ -1,10 +1,15 @@
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { createPageUrl } from '@/utils';
 import { Calendar, Users, BarChart3, Settings, Clock, LogOut } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
+
+// Helper function to convert page names to routes
+const getPageRoute = (pageName) => {
+  if (pageName === 'Dashboard') return '/';
+  return `/${pageName.toLowerCase()}`;
+};
 
 const NAV_ITEMS = [
   { name: 'Dashboard', icon: Calendar, page: 'Dashboard', adminOnly: true },
@@ -42,7 +47,7 @@ export default function Layout({ children, currentPageName }) {
   });
 
   const handleLogout = () => {
-    base44.auth.logout(createPageUrl('Login'));
+    base44.auth.logout();
   };
 
   return (
@@ -52,7 +57,7 @@ export default function Layout({ children, currentPageName }) {
         <div className="max-w-[1600px] mx-auto px-4">
           <div className="flex items-center justify-between h-16">
             {/* Logo */}
-            <Link to={createPageUrl('Dashboard')} className="flex items-center gap-2">
+            <Link to={getPageRoute('Dashboard')} className="flex items-center gap-2">
               <div className="w-9 h-9 rounded-lg bg-gradient-to-br from-sky-500 to-indigo-600 flex items-center justify-center">
                 <Calendar className="w-5 h-5 text-white" />
               </div>
@@ -64,7 +69,7 @@ export default function Layout({ children, currentPageName }) {
               {visibleNavItems.map(item => (
                 <Link
                   key={item.page}
-                  to={createPageUrl(item.page)}
+                  to={getPageRoute(item.page)}
                   className={cn(
                     "flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all",
                     currentPageName === item.page
@@ -98,7 +103,7 @@ export default function Layout({ children, currentPageName }) {
           {visibleNavItems.map(item => (
             <Link
               key={item.page}
-              to={createPageUrl(item.page)}
+              to={getPageRoute(item.page)}
               className={cn(
                 "flex flex-col items-center gap-1 px-3 py-2 rounded-lg",
                 currentPageName === item.page
