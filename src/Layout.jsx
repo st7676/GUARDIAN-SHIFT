@@ -1,13 +1,14 @@
 import React from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { Calendar, Users, BarChart3, Settings, Clock, LogOut } from 'lucide-react';
-import { base44 } from '@/api/base44Client';
+import { Client } from '@/api/Client';
+import { useAuth } from '@/lib/AuthProvider';
 import { cn } from "@/lib/utils";
-import { Button } from "@/components/ui/button";
 
 // Helper function to convert page names to routes
 const getPageRoute = (pageName) => {
   if (pageName === 'Dashboard') return '/';
+  if (pageName === 'Login') return '/login';
   return `/${pageName.toLowerCase()}`;
 };
 
@@ -21,37 +22,26 @@ const NAV_ITEMS = [
 ];
 
 export default function Layout({ children, currentPageName }) {
-  const navigate = useNavigate();
-  const [currentUser, setCurrentUser] = React.useState(null);
+  const { currentUser, logout } = useAuth();
   const [currentNurse, setCurrentNurse] = React.useState(null);
   const [nurses, setNurses] = React.useState([]);
 
   React.useEffect(() => {
-    base44.auth.me().then(user => setCurrentUser(user)).catch(() => {});
-  }, []);
-
-  React.useEffect(() => {
     if (currentUser) {
-      base44.entities.Nurse.filter({ is_active: true }).then(allNurses => {
+        Client.entities.Nurse.filter({ is_active: true }).then(allNurses => {
         setNurses(allNurses);
-        const nurse = allNurses.find(n => n.user_id === currentUser.id);
+        const nurse = allNurses.find(n => (n.user_id && n.user_id === currentUser.id) || n.id === currentUser.id);
         setCurrentNurse(nurse);
       });
     }
   }, [currentUser]);
 
-  const isHeadNurse = currentNurse?.is_head_nurse || false;
+  const isHeadNurse = currentNurse?.is_head_nurse || currentUser?.is_head_nurse || false;
   const visibleNavItems = NAV_ITEMS.filter(item => {
     if (item.adminOnly && !isHeadNurse) return false;
     if (item.page === 'Nurses' && !isHeadNurse) return false;
     return true;
   });
-
-  const handleLogout = () => {
-    localStorage.removeItem('token');
-    localStorage.removeItem('currentUser');
-    navigate('/login');
-  };
 
   return (
     <div className="min-h-screen bg-slate-50">
@@ -87,15 +77,14 @@ export default function Layout({ children, currentPageName }) {
                 </div>
 
                 {/* Logout Button */}
-                <Button
-                variant="ghost"
-                size="sm"
-                onClick={handleLogout}
-                className="gap-2 text-slate-600 hover:text-red-600"
+                <button
+                  onClick={logout}
+                  className="flex items-center gap-2 px-4 py-2 text-slate-600 hover:text-red-600 hover:bg-red-50 rounded-lg transition-all"
+                  title="התנתקות"
                 >
-                <LogOut className="w-4 h-4" />
-                <span className="hidden md:inline">התנתק</span>
-                </Button>
+                  <LogOut className="w-4 h-4" />
+                  <span className="hidden md:inline text-sm font-medium">התנתק</span>
+                </button>
           </div>
         </div>
       </nav>
@@ -118,6 +107,13 @@ export default function Layout({ children, currentPageName }) {
               <span className="text-xs">{item.name}</span>
             </Link>
           ))}
+          <button
+            onClick={logout}
+            className="flex flex-col items-center gap-1 px-3 py-2 rounded-lg text-red-500 hover:bg-red-50 transition-colors"
+          >
+            <LogOut className="w-5 h-5" />
+            <span className="text-xs">Sign Out</span>
+          </button>
         </div>
       </nav>
 

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { base44 } from '@/api/base44Client';
+import { Client } from '@/api/Client';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -38,11 +38,11 @@ export default function Nurses() {
 
   const { data: nurses = [], isLoading } = useQuery({
     queryKey: ['nurses'],
-    queryFn: () => base44.entities.Nurse.list('-created_date')
+    queryFn: () => Client.entities.Nurse.list('-created_date')
   });
 
   const createMutation = useMutation({
-    mutationFn: (data) => base44.entities.Nurse.create(data),
+    mutationFn: (data) => Client.entities.Nurse.create(data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['nurses'] });
       setDialogOpen(false);
@@ -51,7 +51,7 @@ export default function Nurses() {
   });
 
   const updateMutation = useMutation({
-    mutationFn: ({ id, data }) => base44.entities.Nurse.update(id, data),
+    mutationFn: ({ id, data }) => Client.entities.Nurse.update(id, data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['nurses'] });
       setDialogOpen(false);
@@ -61,7 +61,7 @@ export default function Nurses() {
   });
 
   const deleteMutation = useMutation({
-    mutationFn: (id) => base44.entities.Nurse.delete(id),
+    mutationFn: (id) => Client.entities.Nurse.delete(id),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['nurses'] });
       setDialogOpen(false);

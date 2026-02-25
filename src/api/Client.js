@@ -30,15 +30,38 @@ class MockDatabase {
   initializeSampleData() {
     // Initialize with sample nurses
     this.data.nurses = [
-      { id: '1', name: 'רחל כהן', email: 'rachel@example.com', is_active: true, created_date: new Date().toISOString() },
-      { id: '2', name: 'דינה לוי', email: 'dina@example.com', is_active: true, created_date: new Date().toISOString() },
-      { id: '3', name: 'שרה גולדמן', email: 'sara@example.com', is_active: true, created_date: new Date().toISOString() },
+      { id: '1', name: 'רחל כהן', email: 'rachel@example.com', is_active: true, is_head_nurse: false, created_date: new Date().toISOString() },
+      { id: '2', name: 'דינה לוי', email: 'dina@example.com', is_active: true, is_head_nurse: false, created_date: new Date().toISOString() },
+      { id: '3', name: 'שרה גולדמן', email: 'sara@example.com', is_active: true, is_head_nurse: false, created_date: new Date().toISOString() },
+      { id: '4', name: 'מירי אברהם', email: 'miri@example.com', is_active: true, is_head_nurse: false, created_date: new Date().toISOString() },
+      { id: '5', name: 'חנה כספי', email: 'hana@example.com', is_active: true, is_head_nurse: false, created_date: new Date().toISOString() },
     ];
     
     this.data.departments = [
-      { id: '1', name: 'ICU', code: 'ICU' },
-      { id: '2', name: 'Pediatrics', code: 'PED' },
-      { id: '3', name: 'Emergency', code: 'ER' },
+      { id: '1', name: 'ICU', code: 'ICU', is_active: true },
+      { id: '2', name: 'Pediatrics', code: 'PED', is_active: true },
+      { id: '3', name: 'Emergency', code: 'ER', is_active: true },
+    ];
+
+    // Add sample weekly statuses (all active)
+    const today = new Date();
+    const weekStart = new Date(today);
+    weekStart.setDate(today.getDate() - today.getDay());
+    const weekStartStr = weekStart.toISOString().split('T')[0];
+
+    this.data['nurse-weekly-status'] = [
+      { id: '1', nurse_id: '1', week_start_date: weekStartStr, status: 'active', created_date: new Date().toISOString() },
+      { id: '2', nurse_id: '2', week_start_date: weekStartStr, status: 'active', created_date: new Date().toISOString() },
+      { id: '3', nurse_id: '3', week_start_date: weekStartStr, status: 'active', created_date: new Date().toISOString() },
+      { id: '4', nurse_id: '4', week_start_date: weekStartStr, status: 'active', created_date: new Date().toISOString() },
+      { id: '5', nurse_id: '5', week_start_date: weekStartStr, status: 'active', created_date: new Date().toISOString() },
+    ];
+
+    // Add sample availability (all available all week)
+    this.data['nurse-availability'] = [
+      { id: '1', nurse_id: '1', week_start_date: weekStartStr, day_of_week: 0, available: true, created_date: new Date().toISOString() },
+      { id: '2', nurse_id: '1', week_start_date: weekStartStr, day_of_week: 1, available: true, created_date: new Date().toISOString() },
+      // ... more availability records can be added as needed
     ];
 
     this.saveToStorage();
@@ -131,7 +154,7 @@ const mockAuth = {
 };
 
 // Export mock API client
-export const base44 = {
+export const Client = {
   auth: mockAuth,
   entities: {
     Nurse: createEntity('Nurse'),
@@ -145,4 +168,5 @@ export const base44 = {
   },
 };
 
-export default base44;
+
+export default Client;

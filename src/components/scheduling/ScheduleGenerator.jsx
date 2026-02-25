@@ -27,6 +27,13 @@ export default function ScheduleGenerator({
   validationWarnings 
 }) {
   const [showSettings, setShowSettings] = useState(false);
+  
+  console.log('🎛️ ScheduleGenerator component rendered', { isGenerating, supplyDemandBalance });
+
+  const handleClick = () => {
+    console.log('🔘 Schedule Generator button clicked');
+    onGenerate();
+  };
 
   return (
     <Card className="border-0 shadow-lg bg-gradient-to-br from-white to-slate-50">
@@ -95,7 +102,7 @@ export default function ScheduleGenerator({
 
         {/* Generate Button */}
         <Button 
-          onClick={onGenerate}
+          onClick={handleClick}
           disabled={isGenerating}
           className="w-full bg-gradient-to-r from-sky-500 to-indigo-500 hover:from-sky-600 hover:to-indigo-600 text-white shadow-lg"
           size="lg"

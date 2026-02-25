@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { base44 } from '@/api/base44Client';
+import { Client } from '@/api/Client';
 import { useNavigate } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
 import { Loader2 } from 'lucide-react';
@@ -11,11 +11,11 @@ export default function Home() {
   useEffect(() => {
     const checkUserAndRedirect = async () => {
       try {
-        const user = await base44.auth.me();
+        const user = await Client.auth.me();
         
         // Fetch nurse data
-        const nurses = await base44.entities.Nurse.filter({ is_active: true });
-        const currentNurse = nurses.find(n => n.user_id === user.id);
+        const nurses = await Client.entities.Nurse.filter({ is_active: true });
+        const currentNurse = nurses.find(n => (n.user_id && n.user_id === user.id) || n.id === user.id);
         
         if (!currentNurse) {
           // User not linked to any nurse - redirect to error or setup
@@ -32,8 +32,8 @@ export default function Home() {
           navigate(createPageUrl('MySchedule'), { replace: true });
         }
       } catch (error) {
-        // Not logged in - Base44 will redirect to login
-        base44.auth.redirectToLogin();
+        // Not logged in - Client will redirect to login
+        Client.auth.redirectToLogin();
       }
     };
 

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { base44 } from '@/api/base44Client';
+import { Client } from '@/api/Client';
 import { useQuery } from '@tanstack/react-query';
 import { format, startOfWeek, addWeeks, addDays } from 'date-fns';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -16,17 +16,17 @@ export default function MySchedule() {
   const nextWeek = addWeeks(currentWeek, 1);
 
   useEffect(() => {
-    base44.auth.me().then(user => setCurrentUser(user)).catch(() => {});
+    Client.auth.me().then(user => setCurrentUser(user)).catch(() => {});
   }, []);
 
   const { data: nurses = [] } = useQuery({
     queryKey: ['nurses'],
-    queryFn: () => base44.entities.Nurse.filter({ is_active: true })
+    queryFn: () => Client.entities.Nurse.filter({ is_active: true })
   });
 
   useEffect(() => {
     if (currentUser && nurses.length > 0) {
-      const nurse = nurses.find(n => n.user_id === currentUser.id);
+      const nurse = nurses.find(n => (n.user_id && n.user_id === currentUser.id) || n.id === currentUser.id);
       setCurrentNurse(nurse);
     }
   }, [currentUser, nurses]);
@@ -36,7 +36,7 @@ export default function MySchedule() {
 
   const { data: currentWeekAssignments = [] } = useQuery({
     queryKey: ['myAssignments', currentWeekStr],
-    queryFn: () => base44.entities.ShiftAssignment.filter({ 
+    queryFn: () => Client.entities.ShiftAssignment.filter({ 
       week_start_date: currentWeekStr,
       nurse_id: currentNurse?.id 
     }),
@@ -45,7 +45,7 @@ export default function MySchedule() {
 
   const { data: nextWeekAssignments = [] } = useQuery({
     queryKey: ['myAssignments', nextWeekStr],
-    queryFn: () => base44.entities.ShiftAssignment.filter({ 
+    queryFn: () => Client.entities.ShiftAssignment.filter({ 
       week_start_date: nextWeekStr,
       nurse_id: currentNurse?.id 
     }),
@@ -54,22 +54,22 @@ export default function MySchedule() {
 
   const { data: currentWeekSchedule = [] } = useQuery({
     queryKey: ['scheduleWeek', currentWeekStr],
-    queryFn: () => base44.entities.ScheduleWeek.filter({ week_start_date: currentWeekStr })
+    queryFn: () => Client.entities.ScheduleWeek.filter({ week_start_date: currentWeekStr })
   });
 
   const { data: nextWeekSchedule = [] } = useQuery({
     queryKey: ['scheduleWeek', nextWeekStr],
-    queryFn: () => base44.entities.ScheduleWeek.filter({ week_start_date: nextWeekStr })
+    queryFn: () => Client.entities.ScheduleWeek.filter({ week_start_date: nextWeekStr })
   });
 
   const { data: allCurrentWeekAssignments = [] } = useQuery({
     queryKey: ['allAssignments', currentWeekStr],
-    queryFn: () => base44.entities.ShiftAssignment.filter({ week_start_date: currentWeekStr })
+    queryFn: () => Client.entities.ShiftAssignment.filter({ week_start_date: currentWeekStr })
   });
 
   const { data: allNextWeekAssignments = [] } = useQuery({
     queryKey: ['allAssignments', nextWeekStr],
-    queryFn: () => base44.entities.ShiftAssignment.filter({ week_start_date: nextWeekStr })
+    queryFn: () => Client.entities.ShiftAssignment.filter({ week_start_date: nextWeekStr })
   });
 
   if (!currentUser || nurses.length === 0) {

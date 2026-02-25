@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { base44 } from '@/api/base44Client';
+import { Client } from '@/api/Client';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { format, startOfWeek, addWeeks, addDays } from 'date-fns';
 import { Button } from "@/components/ui/button";
@@ -20,17 +20,17 @@ export default function AdminReview() {
 
   const { data: nurses = [] } = useQuery({
     queryKey: ['nurses'],
-    queryFn: () => base44.entities.Nurse.filter({ is_active: true })
+    queryFn: () => Client.entities.Nurse.filter({ is_active: true })
   });
 
   const { data: availability = [] } = useQuery({
     queryKey: ['availability', weekStartStr],
-    queryFn: () => base44.entities.NurseAvailability.filter({ week_start_date: weekStartStr })
+    queryFn: () => Client.entities.NurseAvailability.filter({ week_start_date: weekStartStr })
   });
 
   const { data: scheduleWeeks = [] } = useQuery({
     queryKey: ['scheduleWeeks', weekStartStr],
-    queryFn: () => base44.entities.ScheduleWeek.filter({ week_start_date: weekStartStr })
+    queryFn: () => Client.entities.ScheduleWeek.filter({ week_start_date: weekStartStr })
   });
 
   const currentScheduleWeek = scheduleWeeks[0];

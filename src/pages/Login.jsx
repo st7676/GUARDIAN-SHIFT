@@ -1,17 +1,26 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { base44 } from '@/api/base44Client';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
+import { Client } from '@/api/Client';
+import { useAuth } from '@/lib/AuthProvider';
 import { Calendar } from 'lucide-react';
 
 export default function Login() {
   const navigate = useNavigate();
+  const { setUser, currentUser } = useAuth();
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [role, setRole] = useState('regular');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+
+  // Auto-redirect if already logged in
+  React.useEffect(() => {
+    if (currentUser) {
+      console.log('👤 User already logged in, redirecting to dashboard');
+      navigate('/dashboard', { replace: true });
+    }
+  }, [currentUser, navigate]);
+
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -25,19 +34,25 @@ export default function Login() {
     }
 
     try {
+      console.log('🔐 Attempting login with:', { name, email, role });
+      
       // Create or get nurse user
-      const nurses = await base44.entities.Nurse.filter({ email });
+      const nurses = await Client.entities.Nurse.filter({ email });
+      console.log('Found nurses:', nurses);
+      
       let nurse = nurses[0];
 
       if (!nurse) {
+        console.log('📝 Creating new nurse...');
         // Create new nurse
-        const newNurse = await base44.entities.Nurse.create({
+        const newNurse = await Client.entities.Nurse.create({
           name,
           email,
           is_active: true,
           is_head_nurse: role === 'head',
           user_id: `user_${Date.now()}`,
         });
+        console.log('✅ Created nurse:', newNurse);
         nurse = newNurse;
       }
 
@@ -48,13 +63,24 @@ export default function Login() {
         email: nurse.email,
         is_head_nurse: nurse.is_head_nurse 
       };
-      localStorage.setItem('currentUser', JSON.stringify(user));
+      console.log('✨ Setting user:', user);
+      
+      // Store token
       localStorage.setItem('token', `mock-token-${Date.now()}`);
 
+      // Update auth context
+      setUser(user);
+
+      console.log('🎉 Login successful, navigating...');
+      
       // Navigate to dashboard
-      setTimeout(() => navigate('/'), 500);
+      // setTimeout(() => {
+      //   console.log('⏩ Navigating to dashboard');
+      //   navigate('/');
+      // }, 100);
+      navigate('/', { replace: true });
     } catch (err) {
-      console.error('Login error:', err);
+      console.error('❌ Login error:', err);
       setError('שגיאה בהתחברות: ' + (err?.message || 'נסה שוב'));
     } finally {
       setLoading(false);
@@ -88,14 +114,14 @@ export default function Login() {
               <label htmlFor="name" className="text-slate-700 font-medium text-sm block">
                 שם מלא
               </label>
-              <Input
+              <input
                 id="name"
                 type="text"
                 placeholder="הכנס את שמך"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
                 disabled={loading}
-                className="w-full"
+                className="w-full px-3 py-2 border border-slate-300 rounded-md focus:outline-none focus:ring-2 focus:ring-sky-500"
               />
             </div>
 
@@ -104,14 +130,14 @@ export default function Login() {
               <label htmlFor="email" className="text-slate-700 font-medium text-sm block">
                 דוא״ל
               </label>
-              <Input
+              <input
                 id="email"
                 type="email"
                 placeholder="example@hospital.com"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 disabled={loading}
-                className="w-full"
+                className="w-full px-3 py-2 border border-slate-300 rounded-md focus:outline-none focus:ring-2 focus:ring-sky-500"
               />
             </div>
 
@@ -162,13 +188,13 @@ export default function Login() {
             )}
 
             {/* Submit Button */}
-            <Button 
+            <button 
               type="submit" 
               disabled={loading}
-              className="w-full bg-gradient-to-r from-sky-500 to-indigo-600 hover:from-sky-600 hover:to-indigo-700 text-white font-medium py-2 disabled:opacity-50"
+              className="w-full py-2 px-4 bg-gradient-to-r from-sky-500 to-indigo-600 hover:from-sky-600 hover:to-indigo-700 disabled:from-sky-400 disabled:to-indigo-500 text-white font-medium rounded-md transition-all disabled:opacity-70"
             >
               {loading ? 'מתחבר...' : 'התחברות למערכת'}
-            </Button>
+            </button>
 
             {/* Demo Info */}
             <div className="p-3 bg-blue-50 border border-blue-200 rounded-lg">

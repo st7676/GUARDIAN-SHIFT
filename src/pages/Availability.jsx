@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { base44 } from '@/api/base44Client';
+import { Client } from '@/api/Client';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { format, startOfWeek, addWeeks, getDay, addDays } from 'date-fns';
 import { Button } from "@/components/ui/button";
@@ -27,20 +27,20 @@ export default function Availability() {
   const weekStartStr = format(nextWeek, 'yyyy-MM-dd');
 
   useEffect(() => {
-    base44.auth.me().then(user => setCurrentUser(user)).catch(() => {});
+    Client.auth.me().then(user => setCurrentUser(user)).catch(() => {});
   }, []);
 
   const { data: allNurses = [] } = useQuery({
     queryKey: ['nurses'],
-    queryFn: () => base44.entities.Nurse.filter({ is_active: true })
+    queryFn: () => Client.entities.Nurse.filter({ is_active: true })
   });
 
   const { data: departments = [] } = useQuery({
     queryKey: ['departments'],
-    queryFn: () => base44.entities.Department.filter({ is_active: true })
+    queryFn: () => Client.entities.Department.filter({ is_active: true })
   });
 
-  const currentNurse = allNurses.find(n => n.user_id === currentUser?.id);
+  const currentNurse = allNurses.find(n => (n.user_id && n.user_id === currentUser?.id) || n.id === currentUser?.id);
   const isHeadNurse = currentNurse?.is_head_nurse || false;
   const currentDepartment = departments.find(d => d.id === currentNurse?.department_id);
 
@@ -60,18 +60,18 @@ export default function Availability() {
 
   const { data: availability = [] } = useQuery({
     queryKey: ['availability', weekStartStr],
-    queryFn: () => base44.entities.NurseAvailability.filter({ week_start_date: weekStartStr })
+    queryFn: () => Client.entities.NurseAvailability.filter({ week_start_date: weekStartStr })
   });
 
   const { data: weeklyStatuses = [] } = useQuery({
     queryKey: ['weeklyStatuses', weekStartStr],
-    queryFn: () => base44.entities.NurseWeeklyStatus.filter({ week_start_date: weekStartStr })
+    queryFn: () => Client.entities.NurseWeeklyStatus.filter({ week_start_date: weekStartStr })
   });
 
   // Also fetch persistent blocks
   const { data: persistentBlocks = [] } = useQuery({
     queryKey: ['persistentBlocks'],
-    queryFn: () => base44.entities.NurseAvailability.filter({ is_persistent: true })
+    queryFn: () => Client.entities.NurseAvailability.filter({ is_persistent: true })
   });
 
   useEffect(() => {
@@ -86,7 +86,7 @@ export default function Availability() {
   }, [selectedNurse, availability, persistentBlocks]);
 
   const createAvailMutation = useMutation({
-    mutationFn: (data) => base44.entities.NurseAvailability.create(data),
+    mutationFn: (data) => Client.entities.NurseAvailability.create(data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['availability'] });
       queryClient.invalidateQueries({ queryKey: ['persistentBlocks'] });
@@ -94,7 +94,7 @@ export default function Availability() {
   });
 
   const updateAvailMutation = useMutation({
-    mutationFn: ({ id, data }) => base44.entities.NurseAvailability.update(id, data),
+    mutationFn: ({ id, data }) => Client.entities.NurseAvailability.update(id, data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['availability'] });
       queryClient.invalidateQueries({ queryKey: ['persistentBlocks'] });
@@ -102,7 +102,7 @@ export default function Availability() {
   });
 
   const deleteAvailMutation = useMutation({
-    mutationFn: (id) => base44.entities.NurseAvailability.delete(id),
+    mutationFn: (id) => Client.entities.NurseAvailability.delete(id),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['availability'] });
       queryClient.invalidateQueries({ queryKey: ['persistentBlocks'] });

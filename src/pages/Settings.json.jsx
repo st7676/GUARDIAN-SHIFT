@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { base44 } from '@/api/base44Client';
+import { Client } from '@/api/Client';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Switch } from "@/components/ui/switch";
@@ -15,12 +15,12 @@ export default function Settings() {
   const queryClient = useQueryClient();
 
   useEffect(() => {
-    base44.auth.me().then(user => setCurrentUser(user)).catch(() => {});
+    Client.auth.me().then(user => setCurrentUser(user)).catch(() => {});
   }, []);
 
   const { data: settings = [] } = useQuery({
     queryKey: ['userSettings', currentUser?.id],
-    queryFn: () => base44.entities.UserSettings.filter({ user_id: currentUser.id }),
+    queryFn: () => Client.entities.UserSettings.filter({ user_id: currentUser.id }),
     enabled: !!currentUser
   });
 
@@ -44,7 +44,7 @@ export default function Settings() {
   }, [currentSettings, currentUser]);
 
   const createSettingsMutation = useMutation({
-    mutationFn: (data) => base44.entities.UserSettings.create(data),
+    mutationFn: (data) => Client.entities.UserSettings.create(data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['userSettings'] });
       toast.success('ההגדרות נשמרו בהצלחה');
@@ -52,7 +52,7 @@ export default function Settings() {
   });
 
   const updateSettingsMutation = useMutation({
-    mutationFn: ({ id, data }) => base44.entities.UserSettings.update(id, data),
+    mutationFn: ({ id, data }) => Client.entities.UserSettings.update(id, data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['userSettings'] });
       toast.success('ההגדרות נשמרו בהצלחה');
