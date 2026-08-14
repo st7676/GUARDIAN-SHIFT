@@ -3,9 +3,15 @@ import { Button } from "@/components/ui/button";
 import { ChevronLeft, ChevronRight, CalendarDays } from 'lucide-react';
 import { format, addDays, startOfWeek, addWeeks, subWeeks } from 'date-fns';
 
-export default function WeekSelector({ selectedWeek, onWeekChange }) {
-  const weekStart = startOfWeek(selectedWeek, { weekStartsOn: 0 });
-  const weekEnd = addDays(weekStart, 6);
+function WeekSelector({ selectedWeek, onWeekChange }) {
+  const weekStart = React.useMemo(
+    () => startOfWeek(selectedWeek, { weekStartsOn: 0 }),
+    [selectedWeek]
+  );
+  const weekEnd = React.useMemo(
+    () => addDays(weekStart, 6),
+    [weekStart]
+  );
 
   return (
     <div className="flex items-center gap-4">
@@ -36,3 +42,5 @@ export default function WeekSelector({ selectedWeek, onWeekChange }) {
     </div>
   );
 }
+
+export default React.memo(WeekSelector);

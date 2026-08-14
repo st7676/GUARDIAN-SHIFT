@@ -17,8 +17,6 @@ export function AuthProvider({ children }) {
       if (stored) {
         setCurrentUser(JSON.parse(stored));
       }
-    } catch (err) {
-      console.error('Error loading currentUser:', err);
     } finally {
       setIsLoading(false);
     }
@@ -26,7 +24,6 @@ export function AuthProvider({ children }) {
 
   const logout = (e) => {
     e?.preventDefault();
-    console.log('AuthContext: Logging out...');
     localStorage.removeItem('token');
     localStorage.removeItem('currentUser');
     localStorage.removeItem('currentNurse');
@@ -35,7 +32,6 @@ export function AuthProvider({ children }) {
   };
 
   const setUser = (user) => {
-    console.log('AuthContext: Setting user:', user);
     setCurrentUser(user);
     if (user) {
       localStorage.setItem('currentUser', JSON.stringify(user));

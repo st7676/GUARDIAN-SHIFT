@@ -1,4 +1,29 @@
-// Mock Database in LocalStorage
+/**
+ * Mock Database in LocalStorage
+ *
+ * MIGRATION TO REAL API:
+ * To switch to a real backend API, replace this MockDatabase implementation with
+ * actual axios/fetch calls to your API endpoints.
+ *
+ * Example axios implementation:
+ * ```
+ * import axios from 'axios';
+ * import API_CONFIG from '@/lib/api-config';
+ *
+ * const apiClient = axios.create({
+ *   baseURL: API_CONFIG.baseURL,
+ *   timeout: API_CONFIG.timeout
+ * });
+ *
+ * apiClient.interceptors.request.use(config => {
+ *   const token = localStorage.getItem('token');
+ *   if (token) {
+ *     config.headers.Authorization = `Bearer ${token}`;
+ *   }
+ *   return config;
+ * });
+ * ```
+ */
 class MockDatabase {
   constructor() {
     this.data = {
@@ -81,7 +106,13 @@ class MockDatabase {
 
 const mockDb = new MockDatabase();
 
-// Entity factory function with localStorage
+/**
+ * Entity factory function with localStorage
+ *
+ * This creates CRUD operations for mock data.
+ * When migrating to real API, replace these Promise.resolve() calls
+ * with actual API requests using axios or fetch.
+ */
 const createEntity = (entityName) => {
   return {
     list: (sortBy) => {
@@ -128,7 +159,16 @@ const createEntity = (entityName) => {
   };
 };
 
-// Mock authentication
+/**
+ * Mock Authentication
+ *
+ * MIGRATION TO REAL API:
+ * Replace these methods with actual API calls to your auth endpoints:
+ * - POST /auth/login
+ * - POST /auth/logout
+ * - GET /auth/me
+ * - POST /auth/register
+ */
 const mockAuth = {
   me: () => {
     const user = localStorage.getItem('currentUser');
@@ -153,7 +193,19 @@ const mockAuth = {
   },
 };
 
-// Export mock API client
+/**
+ * Main Client Export
+ *
+ * This is the main API client used throughout the application.
+ * It currently provides mock data via localStorage.
+ *
+ * To integrate with a real backend:
+ * 1. Update the MockDatabase class to make API requests
+ * 2. Update createEntity() to call real endpoints
+ * 3. Update mockAuth to call real auth endpoints
+ * 4. Set up request/response interceptors for auth tokens
+ * 5. Add error handling and retry logic
+ */
 export const Client = {
   auth: mockAuth,
   entities: {

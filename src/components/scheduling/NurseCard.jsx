@@ -20,7 +20,7 @@ const shiftPreferenceIcons = {
   any: null
 };
 
-export default function NurseCard({ nurse, weeklyStatus, onClick, selected }) {
+function NurseCard({ nurse, weeklyStatus, onClick, selected }) {
   const initials = nurse.full_name?.split(' ').map(n => n[0]).join('').slice(0, 2);
   const PreferenceIcon = shiftPreferenceIcons[nurse.shift_type_preference];
   
@@ -89,3 +89,5 @@ export default function NurseCard({ nurse, weeklyStatus, onClick, selected }) {
     </div>
   );
 }
+
+export default React.memo(NurseCard);

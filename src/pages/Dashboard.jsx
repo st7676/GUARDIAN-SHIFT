@@ -17,14 +17,13 @@ import WeekSelector from '@/components/scheduling/WeekSelector';
 import ScheduleGenerator from '@/components/scheduling/ScheduleGenerator';
 import ShiftEditDialog from '@/components/scheduling/ShiftEditDialog';
 import { generateSchedule, calculateSupplyDemand, calculateRequiredStaffing } from '@/components/scheduling/SchedulingEngine';
+import { DashboardSkeleton } from '@/components/loaders/DashboardSkeleton';
 import { toast } from 'sonner';
 
 export default function Dashboard() {
   const navigate = useNavigate();
   const { currentUser, isLoading } = useAuth();
-  
-  console.log('📄 Dashboard component rendered');
-  
+
   const today = new Date();
   const currentWeek = startOfWeek(today, { weekStartsOn: 0 });
   const [selectedWeek, setSelectedWeek] = useState(currentWeek);
@@ -71,38 +70,36 @@ export default function Dashboard() {
   // Redirect to login if not authenticated
   useEffect(() => {
     if (!isLoading && !currentUser) {
-      console.log('Dashboard: No user found, redirecting to login');
       navigate('/login', { replace: true });
     }
   }, [isLoading, currentUser, navigate]);
 
   // Don't render until we know if user is authenticated
   if (isLoading) {
-    return <div className="flex items-center justify-center h-screen">טוען...</div>;
+    return <DashboardSkeleton />;
   }
 
   if (!currentUser) {
     return null;
   }
 
-  const currentNurse = nurses.find(n => (n.user_id && n.user_id === currentUser?.id) || n.id === currentUser?.id);
-  const isHeadNurse = currentUser?.is_head_nurse || currentNurse?.is_head_nurse || false;
-  const currentDepartment = departments[0];
-  const currentScheduleWeek = scheduleWeeks[0];
+  const currentNurse = React.useMemo(
+    () => nurses.find(n => (n.user_id && n.user_id === currentUser?.id) || n.id === currentUser?.id),
+    [nurses, currentUser]
+  );
+  const isHeadNurse = React.useMemo(
+    () => currentUser?.is_head_nurse || currentNurse?.is_head_nurse || false,
+    [currentUser, currentNurse]
+  );
+  const currentDepartment = React.useMemo(
+    () => departments[0],
+    [departments]
+  );
+  const currentScheduleWeek = React.useMemo(
+    () => scheduleWeeks[0],
+    [scheduleWeeks]
+  );
 
-  // Debug logging
-  React.useEffect(() => {
-    console.log('📊 Dashboard Data:', {
-      currentUser: currentUser?.name,
-      isHeadNurse,
-      nurses: nurses.length,
-      departments: departments.length,
-      currentDepartment: currentDepartment?.name,
-      assignments: assignments.length,
-      weeklyStatuses: weeklyStatuses.length,
-      availability: availability.length
-    });
-  }, [currentUser, isHeadNurse, nurses, departments, assignments, weeklyStatuses, availability]);
 
   const createAssignmentMutation = useMutation({
     mutationFn: (data) => Client.entities.ShiftAssignment.create(data),
@@ -133,48 +130,42 @@ export default function Dashboard() {
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ['scheduleWeeks'] })
   });
 
-  const supplyDemand = currentDepartment ? 
-    calculateSupplyDemand(nurses, weeklyStatuses, calculateRequiredStaffing(currentDepartment)) : 
-    null;
+  const supplyDemand = React.useMemo(
+    () => currentDepartment ?
+      calculateSupplyDemand(nurses, weeklyStatuses, calculateRequiredStaffing(currentDepartment)) :
+      null,
+    [currentDepartment, nurses, weeklyStatuses]
+  );
 
   const handleGenerate = async () => {
-    console.log('handleGenerate called:', { currentDepartment, isHeadNurse });
-    
     if (!currentDepartment) {
-      console.warn('❌ No department selected');
       toast.error('אנא בחר מחלקה');
       return;
     }
 
     if (!isHeadNurse) {
-      console.warn('❌ User is not head nurse');
       toast.error('רק אחות ראשית יכולה לסדר משמרות');
       return;
     }
-    
+
     setIsGenerating(true);
     setGenerationProgress(0);
 
     try {
-      console.log('🔄 Deleting existing assignments...');
       // Delete existing assignments for this week
       if (assignments.length > 0) {
         await deleteAssignmentsMutation.mutateAsync(assignments.map(a => a.id));
       }
 
-      console.log('🔄 Generating new schedule...');
       // Generate new schedule
       const result = generateSchedule(
-        nurses, 
-        weeklyStatuses, 
-        availability, 
+        nurses,
+        weeklyStatuses,
+        availability,
         currentDepartment,
         setGenerationProgress
       );
 
-      console.log('📊 Schedule generated:', result);
-
-      console.log('💾 Saving assignments...');
       // Save assignments
       for (const assignment of result.assignments) {
         await createAssignmentMutation.mutateAsync({
@@ -183,7 +174,6 @@ export default function Dashboard() {
         });
       }
 
-      console.log('📝 Updating schedule week...');
       // Save or update schedule week as GENERATED (not published)
       await createScheduleWeekMutation.mutateAsync({
         department_id: currentDepartment.id,
@@ -198,12 +188,10 @@ export default function Dashboard() {
         generated_at: new Date().toISOString()
       });
 
-      console.log('✅ Schedule generation complete!');
       setIsGenerating(false);
       queryClient.invalidateQueries();
       toast.success('הלוח נוצר בהצלחה');
     } catch (err) {
-      console.error('❌ Error generating schedule:', err);
       toast.error('שגיאה בסיום הלוח: ' + (err?.message || 'נסה שוב'));
       setIsGenerating(false);
     }
