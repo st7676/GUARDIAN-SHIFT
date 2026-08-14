@@ -27,11 +27,8 @@ export default function ScheduleGenerator({
   validationWarnings 
 }) {
   const [showSettings, setShowSettings] = useState(false);
-  
-  console.log('🎛️ ScheduleGenerator component rendered', { isGenerating, supplyDemandBalance });
 
   const handleClick = () => {
-    console.log('🔘 Schedule Generator button clicked');
     onGenerate();
   };
 

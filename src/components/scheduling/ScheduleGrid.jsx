@@ -24,7 +24,7 @@ const roleColors = {
   staff: 'bg-slate-100 text-slate-600 border-slate-200'
 };
 
-export default function ScheduleGrid({ assignments, nurses, onCellClick, isShabbatShift }) {
+function ScheduleGrid({ assignments, nurses, onCellClick, isShabbatShift }) {
   const getAssignmentsForCell = (dayIndex, shiftType) => {
     return assignments.filter(a => a.day_of_week === dayIndex && a.shift_type === shiftType);
   };
@@ -125,3 +125,5 @@ export default function ScheduleGrid({ assignments, nurses, onCellClick, isShabb
     </TooltipProvider>
   );
 }
+
+export default React.memo(ScheduleGrid);

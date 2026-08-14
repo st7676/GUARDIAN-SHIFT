@@ -4,13 +4,23 @@ import { Progress } from "@/components/ui/progress";
 import { Users, Calendar, AlertTriangle, CheckCircle } from 'lucide-react';
 import { cn } from "@/lib/utils";
 
-export default function StaffingStats({ scheduleWeek, assignments, nurses }) {
+function StaffingStats({ scheduleWeek, assignments, nurses }) {
   const totalAssigned = assignments?.length || 0;
   const totalRequired = scheduleWeek?.total_shifts_required || 0;
-  const coverage = totalRequired > 0 ? Math.round((totalAssigned / totalRequired) * 100) : 0;
-  
-  const problematicShifts = assignments?.filter(a => a.is_problematic).length || 0;
-  const uniqueNursesScheduled = new Set(assignments?.map(a => a.nurse_id)).size;
+  const coverage = React.useMemo(
+    () => totalRequired > 0 ? Math.round((totalAssigned / totalRequired) * 100) : 0,
+    [totalAssigned, totalRequired]
+  );
+
+  const problematicShifts = React.useMemo(
+    () => assignments?.filter(a => a.is_problematic).length || 0,
+    [assignments]
+  );
+
+  const uniqueNursesScheduled = React.useMemo(
+    () => new Set(assignments?.map(a => a.nurse_id)).size,
+    [assignments]
+  );
   
   const stats = [
     {
@@ -68,3 +78,5 @@ export default function StaffingStats({ scheduleWeek, assignments, nurses }) {
     </div>
   );
 }
+
+export default React.memo(StaffingStats);
